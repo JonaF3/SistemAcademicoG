@@ -5,9 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proforma {{ proforma.numero_proforma }}</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
         @media print {
-            .no-print { display: none; }
-            body { margin: 0; padding: 20px; }
+            .no-print { display: none !important; }
+            body { 
+                margin: 0; 
+                padding: 15px;
+                background: white !important;
+            }
+            .container {
+                box-shadow: none !important;
+                border: 1px solid #e2e8f0 !important;
+            }
         }
         
         * {
@@ -17,351 +27,516 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f4f8;
+            padding: 40px 20px;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
         
+        /* Header con gradiente */
         .header {
-            text-align: center;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 50px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .header h1 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 5px;
+        .header-left h1 {
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
         
-        .header p {
-            color: #666;
+        .header-left p {
+            opacity: 0.9;
             font-size: 1.1em;
         }
         
-        .proforma-info {
-            background: #667eea;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
+        .header-right {
+            text-align: right;
         }
         
-        .proforma-info h2 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
+        .proforma-badge {
+            background: white;
+            color: #1e3a8a;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .proforma-numero {
             font-size: 1.8em;
-            font-weight: bold;
+            font-weight: 700;
             letter-spacing: 2px;
         }
         
-        .section {
-            margin-bottom: 30px;
-        }
-        
-        .section h3 {
-            color: #667eea;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* Botones de acción */
+        .action-bar {
+            padding: 30px 60px;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
             gap: 15px;
-        }
-        
-        .info-item {
-            padding: 10px;
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-        }
-        
-        .info-item label {
-            display: block;
-            font-weight: bold;
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-        
-        .info-item .value {
-            font-size: 1.1em;
-            color: #333;
-        }
-        
-        .monto-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 30px 0;
-        }
-        
-        .monto-box label {
-            font-size: 1.2em;
-            display: block;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-        
-        .monto-box .monto {
-            font-size: 3em;
-            font-weight: bold;
-        }
-        
-        .estado {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1em;
-        }
-        
-        .estado.pendiente {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .estado.pagado {
-            background: #28a745;
-            color: white;
-        }
-        
-        .footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
-            text-align: center;
-            color: #666;
-        }
-        
-        .instrucciones {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 20px;
-            margin: 30px 0;
-        }
-        
-        .instrucciones h4 {
-            color: #856404;
-            margin-bottom: 10px;
-        }
-        
-        .instrucciones ol {
-            margin-left: 20px;
-        }
-        
-        .instrucciones li {
-            margin: 8px 0;
-            color: #856404;
-        }
-        
-        .buttons {
-            text-align: center;
-            margin: 30px 0;
+            justify-content: center;
         }
         
         .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            margin: 0 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
+            padding: 14px 35px;
+            border-radius: 10px;
             text-decoration: none;
-            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: none;
         }
         
-        .btn-print {
-            background: #667eea;
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
             color: white;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
         }
         
-        .btn-print:hover {
-            background: #764ba2;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
         
-        .btn-back {
-            background: #6c757d;
+        .btn-secondary {
+            background: white;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        
+        /* Contenido principal */
+        .content {
+            padding: 50px 60px;
+        }
+        
+        /* Grid de información */
+        .info-section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e2e8f0;
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 1.2em;
         }
         
-        .btn-back:hover {
-            background: #5a6268;
+        .section-title h2 {
+            color: #1e293b;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
         }
         
-        .asignaturas-list {
-            list-style: none;
-            padding: 0;
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
         }
         
-        .asignaturas-list li {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-left: 4px solid #667eea;
-            border-radius: 5px;
+        .data-item {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .data-label {
+            color: #64748b;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .data-value {
+            color: #1e293b;
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+        
+        /* Lista de asignaturas */
+        .asignaturas-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .asignatura-card {
+            background: #f8fafc;
+            padding: 20px 25px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .asignatura-card:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+        
+        .asignatura-icon {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1em;
+            flex-shrink: 0;
         }
         
         .asignatura-nombre {
-            font-weight: bold;
-            color: #333;
-            font-size: 1.05em;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.1em;
+            margin-bottom: 5px;
         }
         
         .asignatura-descripcion {
-            color: #666;
+            color: #64748b;
             font-size: 0.9em;
-            margin-top: 5px;
+            line-height: 1.5;
         }
         
-        @page {
-            margin: 20mm;
+        /* Monto destacado */
+        .monto-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+            border: 3px solid #10b981;
+        }
+        
+        .monto-label {
+            color: #065f46;
+            font-size: 1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .monto-value {
+            color: #10b981;
+            font-size: 4em;
+            font-weight: 800;
+        }
+        
+        /* Estado */
+        .estado-badge {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .estado-badge.pendiente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .estado-badge.pagado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Instrucciones */
+        .instrucciones {
+            background: #fff7ed;
+            border: 3px solid #fb923c;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+        
+        .instrucciones h3 {
+            color: #9a3412;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instrucciones ol {
+            margin-left: 25px;
+            color: #78350f;
+            line-height: 2;
+        }
+        
+        .instrucciones li {
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: white;
+            padding: 40px 60px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .footer h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .footer p {
+            opacity: 0.9;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+        
+        .footer-note {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            
+            .header-right {
+                text-align: center;
+                margin-top: 20px;
+            }
+            
+            .content, .action-bar, .footer {
+                padding: 30px 20px;
+            }
+            
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media print {
+            body { background: white; color: #000; }
+            .container { border-radius: 0; }
+            .header { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .data-item, .asignatura-card { background: #f8f8f8 !important; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Encabezado -->
+        <!-- Header -->
         <div class="header">
-            <h1>🎓 LICEO BENAVIDEZ</h1>
-            <p>Sistema de Gestión Académica</p>
-        </div>
-        
-        <!-- Información de la Proforma -->
-        <div class="proforma-info">
-            <h2>PROFORMA DE MATRÍCULA</h2>
-            <div class="proforma-numero">{{ proforma.numero_proforma }}</div>
-            <p style="margin-top: 10px;">Fecha de Emisión: {{ proforma.fecha_generacion[:10] }}</p>
-        </div>
-        
-        <!-- Botones (solo visible en pantalla) -->
-        <div class="buttons no-print">
-            <button onclick="window.print()" class="btn btn-print">🖨️ Imprimir / Guardar como PDF</button>
-            <a href="{{ url_for('index') }}" class="btn btn-back">← Volver</a>
-        </div>
-        
-        <!-- Datos del Estudiante -->
-        <div class="section">
-            <h3>📋 DATOS DEL ESTUDIANTE</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>Código de Estudiante:</label>
-                    <div class="value">{{ proforma.codigo_estudiante }}</div>
-                </div>
-                <div class="info-item">
-                    <label>Cédula:</label>
-                    <div class="value">{{ proforma.cedula }}</div>
-                </div>
-                <div class="info-item">
-                    <label>Nombre Completo:</label>
-                    <div class="value">{{ proforma.nombre }} {{ proforma.apellido }}</div>
-                </div>
-                <div class="info-item">
-                    <label>Curso:</label>
-                    <div class="value">{{ proforma.curso }}</div>
-                </div>
-                <div class="info-item" style="grid-column: span 2;">
-                    <label>Email:</label>
-                    <div class="value">{{ proforma.email }}</div>
-                </div>
+            <div class="header-left">
+                <h1>🎓 Liceo Benavidez</h1>
+                <p>Sistema de Gestión Académica</p>
+            </div>
+            <div class="header-right">
+                <div class="proforma-badge">Proforma de Matrícula</div>
+                <div class="proforma-numero">{{ proforma.numero_proforma }}</div>
+                <p style="margin-top: 10px; opacity: 0.8;">{{ proforma.fecha_generacion[:10] }}</p>
             </div>
         </div>
         
-        <!-- Asignaturas Seleccionadas -->
-        <div class="section">
-            <h3>📚 ASIGNATURAS A CURSAR</h3>
-            <ul class="asignaturas-list">
-                {% for asignatura in asignaturas %}
-                <li>
-                    <div class="asignatura-nombre">{{ asignatura.nombre_asignatura }}</div>
-                    {% if asignatura.descripcion %}
-                    <div class="asignatura-descripcion">{{ asignatura.descripcion }}</div>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
+        <!-- Barra de Acciones -->
+        <div class="action-bar no-print">
+            <button onclick="window.print()" class="btn btn-primary">
+                🖨️ Imprimir / Guardar PDF
+            </button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                ← Volver al Dashboard
+            </a>
         </div>
         
-        <!-- Monto a Pagar -->
-        <div class="monto-box">
-            <label>MONTO TOTAL A PAGAR</label>
-            <div class="monto">${{ "%.2f"|format(proforma.monto) }}</div>
-        </div>
-        
-        <!-- Estado -->
-        <div class="section">
-            <h3>📊 ESTADO DE LA PROFORMA</h3>
-            <div class="info-item">
-                <label>Estado Actual:</label>
-                <div class="value">
-                    <span class="estado {{ proforma.estado }}">
+        <!-- Contenido -->
+        <div class="content">
+            <!-- Datos del Estudiante -->
+            <div class="info-section">
+                <div class="section-title">
+                    <div class="section-icon">👤</div>
+                    <h2>Información del Estudiante</h2>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Código</div>
+                        <div class="data-value">{{ proforma.codigo_estudiante }}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Cédula</div>
+                        <div class="data-value">{{ proforma.cedula }}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Nombre Completo</div>
+                        <div class="data-value">{{ proforma.nombre }} {{ proforma.apellido }}</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Curso</div>
+                        <div class="data-value">{{ proforma.curso }}</div>
+                    </div>
+                    <div class="data-item" style="grid-column: span 2;">
+                        <div class="data-label">Email</div>
+                        <div class="data-value">{{ proforma.email }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Asignaturas -->
+            <div class="info-section">
+                <div class="section-title">
+                    <div class="section-icon">📚</div>
+                    <h2>Asignaturas a Cursar</h2>
+                </div>
+                <div class="asignaturas-grid">
+                    {% for asignatura in asignaturas %}
+                    <div class="asignatura-card">
+                        <div class="asignatura-icon">✓</div>
+                        <div>
+                            <div class="asignatura-nombre">{{ asignatura.nombre_asignatura }}</div>
+                            {% if asignatura.descripcion %}
+                            <div class="asignatura-descripcion">{{ asignatura.descripcion }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Monto -->
+            <div class="monto-box">
+                <div class="monto-label">Monto Total a Pagar</div>
+                <div class="monto-value">${{ "%.2f"|format(proforma.monto) }}</div>
+            </div>
+            
+            <!-- Estado -->
+            <div class="info-section">
+                <div class="section-title">
+                    <div class="section-icon">📊</div>
+                    <h2>Estado de la Proforma</h2>
+                </div>
+                <div style="text-align: center; padding: 20px;">
+                    <span class="estado-badge {{ proforma.estado }}">
                         {{ proforma.estado.upper() }}
                     </span>
                 </div>
             </div>
-        </div>
-        
-        <!-- Instrucciones de Pago -->
-        <div class="instrucciones">
-            <h4>💳 INSTRUCCIONES PARA EL PAGO</h4>
-            <ol>
-                <li>Realizar el pago en cualquier sucursal bancaria o mediante transferencia electrónica</li>
-                <li>Presentar esta proforma en ventanilla o adjuntar el número en la descripción de la transferencia</li>
-                <li>Guardar el comprobante de pago entregado por el banco</li>
-                <li>Entregar el comprobante junto con esta proforma en la Unidad Contable del Liceo</li>
-                <li>Una vez registrado el pago, su matrícula será activada automáticamente</li>
-            </ol>
-        </div>
-        
-        <!-- Información Bancaria -->
-        <div class="section">
-            <h3>🏦 INFORMACIÓN BANCARIA</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>Banco:</label>
-                    <div class="value">Banco del Pichincha</div>
+            
+            <!-- Instrucciones -->
+            <div class="instrucciones">
+                <h3>💳 Instrucciones para Realizar el Pago</h3>
+                <ol>
+                    <li>Dirígete a cualquier sucursal del Banco del Pichincha o realiza una transferencia electrónica</li>
+                    <li>Indica el número de esta proforma en la descripción del pago</li>
+                    <li>Conserva el comprobante bancario que recibirás</li>
+                    <li>Entrega el comprobante en la Unidad Contable del Liceo junto con esta proforma</li>
+                    <li>Tu matrícula se activará automáticamente una vez registrado el pago</li>
+                </ol>
+            </div>
+            
+            <!-- Info Bancaria -->
+            <div class="info-section">
+                <div class="section-title">
+                    <div class="section-icon">🏦</div>
+                    <h2>Información Bancaria</h2>
                 </div>
-                <div class="info-item">
-                    <label>Cuenta:</label>
-                    <div class="value">2100123456</div>
-                </div>
-                <div class="info-item">
-                    <label>Beneficiario:</label>
-                    <div class="value">Liceo Benavidez</div>
-                </div>
-                <div class="info-item">
-                    <label>Tipo de Cuenta:</label>
-                    <div class="value">Corriente</div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <div class="data-label">Banco</div>
+                        <div class="data-value">Banco del Pichincha</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Número de Cuenta</div>
+                        <div class="data-value">2100123456</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Beneficiario</div>
+                        <div class="data-value">Liceo Benavidez</div>
+                    </div>
+                    <div class="data-item">
+                        <div class="data-label">Tipo de Cuenta</div>
+                        <div class="data-value">Cuenta Corriente</div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- Pie de página -->
+        <!-- Footer -->
         <div class="footer">
-            <p><strong>Liceo Benavidez</strong></p>
-            <p>Dirección: Av. Principal 123, Quito, Ecuador</p>
-            <p>Teléfono: (02) 234-5678 | Email: info@liceobenavidez.edu.ec</p>
-            <p style="margin-top: 15px; font-size: 0.9em;">
-                Este documento es válido únicamente para el período académico actual
-            </p>
+            <div class="footer-content">
+                <h3>Liceo Benavidez</h3>
+                <p>Av. Principal 123, Quito, Ecuador</p>
+                <p>📞 (02) 234-5678 | ✉️ info@liceobenavidez.edu.ec</p>
+                <div class="footer-note">
+                    Este documento es válido únicamente para el período académico actual
+                </div>
+            </div>
         </div>
     </div>
 </body>

@@ -1,85 +1,130 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio - Sistema Académico{% endblock %}
+{% block page_title %}Dashboard Principal{% endblock %}
+{% block title %}Dashboard - Sistema Académico{% endblock %}
 
 {% block content %}
-<h2 style="color: #667eea; margin-bottom: 20px;">📚 Estudiantes Registrados</h2>
+<!-- Estadísticas Rápidas -->
+<div class="stats-grid">
+    <div class="stat-card" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+        <h4>TOTAL ESTUDIANTES</h4>
+        <div class="value">{{ estudiantes|length }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <h4>MATRICULADOS</h4>
+        <div class="value">{{ estudiantes|selectattr('estado_matricula', 'equalto', 'matriculado')|list|length }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <h4>PENDIENTES</h4>
+        <div class="value">{{ estudiantes|selectattr('estado_matricula', 'equalto', 'no_matriculado')|list|length }}</div>
+    </div>
+    <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+        <h4>PROFORMAS</h4>
+        <div class="value">{{ proformas|length }}</div>
+    </div>
+</div>
+
+<!-- Sección de Estudiantes -->
+<div class="section-header">
+    <div class="section-icon">👨‍🎓</div>
+    <h2>Estudiantes Registrados</h2>
+</div>
 
 {% if estudiantes %}
-<table>
-    <thead>
-        <tr>
-            <th>Código</th>
-            <th>Cédula</th>
-            <th>Nombre Completo</th>
-            <th>Curso</th>
-            <th>Email</th>
-            <th>Estado</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for estudiante in estudiantes %}
-        <tr>
-            <td><strong>{{ estudiante.codigo_estudiante }}</strong></td>
-            <td>{{ estudiante.cedula }}</td>
-            <td>{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
-            <td>{{ estudiante.curso }}</td>
-            <td>{{ estudiante.email }}</td>
-            <td>
-                <span class="badge {{ estudiante.estado_matricula.replace('_', '-') }}">
-                    {{ estudiante.estado_matricula.replace('_', ' ').title() }}
-                </span>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-card-list">
+    {% for estudiante in estudiantes %}
+    <div class="table-card">
+        <div class="table-card-item">
+            <div class="table-card-label">Código</div>
+            <div class="table-card-value" style="color: #3b82f6; font-weight: 700;">{{ estudiante.codigo_estudiante }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Estudiante</div>
+            <div class="table-card-value">{{ estudiante.nombre }} {{ estudiante.apellido }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Cédula</div>
+            <div class="table-card-value">{{ estudiante.cedula }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Curso</div>
+            <div class="table-card-value">{{ estudiante.curso }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Email</div>
+            <div class="table-card-value" style="font-size: 0.9em;">{{ estudiante.email }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Estado</div>
+            <span class="badge {{ estudiante.estado_matricula.replace('_', '-') }}">
+                {{ estudiante.estado_matricula.replace('_', ' ').title() }}
+            </span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% else %}
 <div class="empty-state">
-    <p>📭 No hay estudiantes registrados aún</p>
-    <p>Comienza registrando un nuevo estudiante</p>
+    <div class="empty-state-icon">👨‍🎓</div>
+    <p><strong>No hay estudiantes registrados</strong></p>
+    <p style="margin-top: 10px; font-size: 0.95em;">Comienza agregando tu primer estudiante al sistema</p>
 </div>
 {% endif %}
 
-<h2 style="color: #667eea; margin: 40px 0 20px 0;">📋 Proformas Generadas</h2>
+<!-- Sección de Proformas -->
+<div class="section-header" style="margin-top: 60px;">
+    <div class="section-icon">📋</div>
+    <h2>Proformas Generadas</h2>
+</div>
 
 {% if proformas %}
-<table>
-    <thead>
-        <tr>
-            <th>Número Proforma</th>
-            <th>Estudiante</th>
-            <th>Código</th>
-            <th>Curso</th>
-            <th>Monto</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th class="no-print">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for proforma in proformas %}
-        <tr>
-            <td><strong>{{ proforma.numero_proforma }}</strong></td>
-            <td>{{ proforma.nombre }} {{ proforma.apellido }}</td>
-            <td>{{ proforma.codigo_estudiante }}</td>
-            <td>{{ proforma.curso }}</td>
-            <td>${{ "%.2f"|format(proforma.monto) }}</td>
-            <td>{{ proforma.fecha_generacion[:10] }}</td>
-            <td><span class="badge {{ proforma.estado }}">{{ proforma.estado.title() }}</span></td>
-            <td class="no-print">
-                <a href="{{ url_for('ver_proforma', numero_proforma=proforma.numero_proforma) }}" 
-                   style="background: #667eea; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 0.9em; display: inline-block;">
-                    📄 Ver Proforma
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-card-list">
+    {% for proforma in proformas %}
+    <div class="table-card">
+        <div class="table-card-item">
+            <div class="table-card-label">N° Proforma</div>
+            <div class="table-card-value" style="color: #3b82f6; font-weight: 700;">{{ proforma.numero_proforma }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Estudiante</div>
+            <div class="table-card-value">{{ proforma.nombre }} {{ proforma.apellido }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Código</div>
+            <div class="table-card-value">{{ proforma.codigo_estudiante }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Curso</div>
+            <div class="table-card-value">{{ proforma.curso }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Monto</div>
+            <div class="table-card-value" style="color: #10b981; font-weight: 700; font-size: 1.1em;">
+                ${{ "%.2f"|format(proforma.monto) }}
+            </div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Fecha</div>
+            <div class="table-card-value">{{ proforma.fecha_generacion[:10] }}</div>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Estado</div>
+            <span class="badge {{ proforma.estado }}">{{ proforma.estado.title() }}</span>
+        </div>
+        <div class="table-card-item">
+            <div class="table-card-label">Acciones</div>
+            <a href="{{ url_for('ver_proforma', numero_proforma=proforma.numero_proforma) }}" class="btn-action">
+                📄 Ver Detalles
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% else %}
 <div class="empty-state">
-    <p>📭 No hay proformas generadas aún</p>
+    <div class="empty-state-icon">📋</div>
+    <p><strong>No hay proformas generadas</strong></p>
+    <p style="margin-top: 10px; font-size: 0.95em;">Las proformas aparecerán aquí una vez que los estudiantes las generen</p>
 </div>
 {% endif %}
 
