@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proforma {{ proforma.numero_proforma }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { margin: 0; padding: 20px; }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .proforma-info {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .proforma-info h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .proforma-numero {
+            font-size: 1.8em;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .info-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-item label {
+            display: block;
+            font-weight: bold;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .info-item .value {
+            font-size: 1.1em;
+            color: #333;
+        }
+        
+        .monto-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .monto-box label {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .monto-box .monto {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        
+        .estado {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+        
+        .estado.pendiente {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .estado.pagado {
+            background: #28a745;
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+        }
+        
+        .instrucciones {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .instrucciones h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .instrucciones ol {
+            margin-left: 20px;
+        }
+        
+        .instrucciones li {
+            margin: 8px 0;
+            color: #856404;
+        }
+        
+        .buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-print {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-print:hover {
+            background: #764ba2;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        .asignaturas-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .asignaturas-list li {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        
+        .asignatura-nombre {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.05em;
+        }
+        
+        .asignatura-descripcion {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        @page {
+            margin: 20mm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Encabezado -->
+        <div class="header">
+            <h1>🎓 LICEO BENAVIDEZ</h1>
+            <p>Sistema de Gestión Académica</p>
+        </div>
+        
+        <!-- Información de la Proforma -->
+        <div class="proforma-info">
+            <h2>PROFORMA DE MATRÍCULA</h2>
+            <div class="proforma-numero">{{ proforma.numero_proforma }}</div>
+            <p style="margin-top: 10px;">Fecha de Emisión: {{ proforma.fecha_generacion[:10] }}</p>
+        </div>
+        
+        <!-- Botones (solo visible en pantalla) -->
+        <div class="buttons no-print">
+            <button onclick="window.print()" class="btn btn-print">🖨️ Imprimir / Guardar como PDF</button>
+            <a href="{{ url_for('index') }}" class="btn btn-back">← Volver</a>
+        </div>
+        
+        <!-- Datos del Estudiante -->
+        <div class="section">
+            <h3>📋 DATOS DEL ESTUDIANTE</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Código de Estudiante:</label>
+                    <div class="value">{{ proforma.codigo_estudiante }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Cédula:</label>
+                    <div class="value">{{ proforma.cedula }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Nombre Completo:</label>
+                    <div class="value">{{ proforma.nombre }} {{ proforma.apellido }}</div>
+                </div>
+                <div class="info-item">
+                    <label>Curso:</label>
+                    <div class="value">{{ proforma.curso }}</div>
+                </div>
+                <div class="info-item" style="grid-column: span 2;">
+                    <label>Email:</label>
+                    <div class="value">{{ proforma.email }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Asignaturas Seleccionadas -->
+        <div class="section">
+            <h3>📚 ASIGNATURAS A CURSAR</h3>
+            <ul class="asignaturas-list">
+                {% for asignatura in asignaturas %}
+                <li>
+                    <div class="asignatura-nombre">{{ asignatura.nombre_asignatura }}</div>
+                    {% if asignatura.descripcion %}
+                    <div class="asignatura-descripcion">{{ asignatura.descripcion }}</div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- Monto a Pagar -->
+        <div class="monto-box">
+            <label>MONTO TOTAL A PAGAR</label>
+            <div class="monto">${{ "%.2f"|format(proforma.monto) }}</div>
+        </div>
+        
+        <!-- Estado -->
+        <div class="section">
+            <h3>📊 ESTADO DE LA PROFORMA</h3>
+            <div class="info-item">
+                <label>Estado Actual:</label>
+                <div class="value">
+                    <span class="estado {{ proforma.estado }}">
+                        {{ proforma.estado.upper() }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instrucciones de Pago -->
+        <div class="instrucciones">
+            <h4>💳 INSTRUCCIONES PARA EL PAGO</h4>
+            <ol>
+                <li>Realizar el pago en cualquier sucursal bancaria o mediante transferencia electrónica</li>
+                <li>Presentar esta proforma en ventanilla o adjuntar el número en la descripción de la transferencia</li>
+                <li>Guardar el comprobante de pago entregado por el banco</li>
+                <li>Entregar el comprobante junto con esta proforma en la Unidad Contable del Liceo</li>
+                <li>Una vez registrado el pago, su matrícula será activada automáticamente</li>
+            </ol>
+        </div>
+        
+        <!-- Información Bancaria -->
+        <div class="section">
+            <h3>🏦 INFORMACIÓN BANCARIA</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Banco:</label>
+                    <div class="value">Banco del Pichincha</div>
+                </div>
+                <div class="info-item">
+                    <label>Cuenta:</label>
+                    <div class="value">2100123456</div>
+                </div>
+                <div class="info-item">
+                    <label>Beneficiario:</label>
+                    <div class="value">Liceo Benavidez</div>
+                </div>
+                <div class="info-item">
+                    <label>Tipo de Cuenta:</label>
+                    <div class="value">Corriente</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pie de página -->
+        <div class="footer">
+            <p><strong>Liceo Benavidez</strong></p>
+            <p>Dirección: Av. Principal 123, Quito, Ecuador</p>
+            <p>Teléfono: (02) 234-5678 | Email: info@liceobenavidez.edu.ec</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                Este documento es válido únicamente para el período académico actual
+            </p>
+        </div>
+    </div>
+</body>
+</html>

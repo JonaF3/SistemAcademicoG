@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Sistema Académico{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; margin-bottom: 20px;">📚 Estudiantes Registrados</h2>
+
+{% if estudiantes %}
+<table>
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Cédula</th>
+            <th>Nombre Completo</th>
+            <th>Curso</th>
+            <th>Email</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for estudiante in estudiantes %}
+        <tr>
+            <td><strong>{{ estudiante.codigo_estudiante }}</strong></td>
+            <td>{{ estudiante.cedula }}</td>
+            <td>{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
+            <td>{{ estudiante.curso }}</td>
+            <td>{{ estudiante.email }}</td>
+            <td>
+                <span class="badge {{ estudiante.estado_matricula.replace('_', '-') }}">
+                    {{ estudiante.estado_matricula.replace('_', ' ').title() }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>📭 No hay estudiantes registrados aún</p>
+    <p>Comienza registrando un nuevo estudiante</p>
+</div>
+{% endif %}
+
+<h2 style="color: #667eea; margin: 40px 0 20px 0;">📋 Proformas Generadas</h2>
+
+{% if proformas %}
+<table>
+    <thead>
+        <tr>
+            <th>Número Proforma</th>
+            <th>Estudiante</th>
+            <th>Código</th>
+            <th>Curso</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th class="no-print">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for proforma in proformas %}
+        <tr>
+            <td><strong>{{ proforma.numero_proforma }}</strong></td>
+            <td>{{ proforma.nombre }} {{ proforma.apellido }}</td>
+            <td>{{ proforma.codigo_estudiante }}</td>
+            <td>{{ proforma.curso }}</td>
+            <td>${{ "%.2f"|format(proforma.monto) }}</td>
+            <td>{{ proforma.fecha_generacion[:10] }}</td>
+            <td><span class="badge {{ proforma.estado }}">{{ proforma.estado.title() }}</span></td>
+            <td class="no-print">
+                <a href="{{ url_for('ver_proforma', numero_proforma=proforma.numero_proforma) }}" 
+                   style="background: #667eea; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 0.9em; display: inline-block;">
+                    📄 Ver Proforma
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <p>📭 No hay proformas generadas aún</p>
+</div>
+{% endif %}
+
+{% endblock %}

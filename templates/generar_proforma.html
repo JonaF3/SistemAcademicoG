@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Generar Proforma{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; text-align: center; margin-bottom: 30px;">📄 Generar Proforma de Matrícula</h2>
+
+{% if estudiantes %}
+<form method="POST" action="{{ url_for('crear_proforma') }}" id="formProforma">
+    <div class="form-group">
+        <label for="id_estudiante">Seleccionar Estudiante *</label>
+        <select id="id_estudiante" name="id_estudiante" required onchange="cargarAsignaturas()">
+            <option value="">-- Seleccione un estudiante --</option>
+            {% for estudiante in estudiantes %}
+            <option value="{{ estudiante.id }}" data-curso="{{ estudiante.curso }}">
+                {{ estudiante.codigo_estudiante }} - {{ estudiante.nombre }} {{ estudiante.apellido }} ({{ estudiante.curso }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div id="info-curso" style="display: none; background: #e7f3ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196F3;">
+        <strong>📚 Curso:</strong> <span id="nombre-curso"></span><br>
+        <strong>💰 Costo de Matrícula:</strong> <span id="costo-curso"></span>
+    </div>
+    
+    <div id="asignaturas-container" style="display: none;">
+        <div class="form-group">
+            <label>Asignaturas Disponibles *</label>
+            <p style="color: #666; font-size: 0.9em; margin-bottom: 15px;">
+                Seleccione las asignaturas que cursará en este período académico
+            </p>
+            <div id="lista-asignaturas" style="display: grid; gap: 10px;">
+                <!-- Asignaturas se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <div id="boton-container" style="display: none;">
+        <button type="submit">Generar Proforma</button>
+    </div>
+</form>
+{% else %}
+<div class="empty-state">
+    <p>⚠️ No hay estudiantes disponibles para generar proforma</p>
+    <p>Todos los estudiantes ya tienen proformas pendientes o están matriculados</p>
+    <br>
+    <a href="{{ url_for('registro') }}" style="color: #667eea; text-decoration: none; font-weight: 600;">
+        ➕ Registrar nuevo estudiante
+    </a>
+</div>
+{% endif %}
+
+<script>
+const costosPorCurso = {
+    'Primer Curso': 300.00,
+    'Segundo Curso': 340.00,
+    'Tercer Curso': 450.00
+};
+
+async function cargarAsignaturas() {
+    const select = document.getElementById('id_estudiante');
+    const selectedOption = select.options[select.selectedIndex];
+    const curso = selectedOption.getAttribute('data-curso');
+    
+    if (!curso) {
+        document.getElementById('info-curso').style.display = 'none';
+        document.getElementById('asignaturas-container').style.display = 'none';
+        document.getElementById('boton-container').style.display = 'none';
+        return;
+    }
+    
+    // Mostrar información del curso
+    document.getElementById('nombre-curso').textContent = curso;
+    document.getElementById('costo-curso').textContent = '$' + costosPorCurso[curso].toFixed(2);
+    document.getElementById('info-curso').style.display = 'block';
+    
+    // Cargar asignaturas
+    try {
+        const response = await fetch(`/obtener-asignaturas/${encodeURIComponent(curso)}`);
+        const asignaturas = await response.json();
+        
+        const container = document.getElementById('lista-asignaturas');
+        container.innerHTML = '';
+        
+        asignaturas.forEach(asignatura => {
+            const div = document.createElement('div');
+            div.style.cssText = 'background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px solid #e0e0e0; transition: all 0.3s;';
+            div.innerHTML = `
+                <label style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                    <input type="checkbox" name="asignaturas[]" value="${asignatura.id}" 
+                           style="width: auto; margin-right: 12px; cursor: pointer;"
+                           onchange="actualizarEstiloCheckbox(this)">
+                    <div>
+                        <strong style="font-size: 1.1em; color: #333;">${asignatura.nombre}</strong>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9em;">${asignatura.descripcion || ''}</p>
+                    </div>
+                </label>
+            `;
+            container.appendChild(div);
+        });
+        
+        document.getElementById('asignaturas-container').style.display = 'block';
+        document.getElementById('boton-container').style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error al cargar asignaturas:', error);
+        alert('Error al cargar las asignaturas. Por favor, intente nuevamente.');
+    }
+}
+
+function actualizarEstiloCheckbox(checkbox) {
+    const div = checkbox.closest('div[style*="background"]');
+    if (checkbox.checked) {
+        div.style.borderColor = '#667eea';
+        div.style.backgroundColor = '#f0f3ff';
+    } else {
+        div.style.borderColor = '#e0e0e0';
+        div.style.backgroundColor = '#f8f9fa';
+    }
+}
+
+// Validar que se seleccione al menos una asignatura
+document.getElementById('formProforma')?.addEventListener('submit', function(e) {
+    const checkboxes = document.querySelectorAll('input[name="asignaturas[]"]:checked');
+    if (checkboxes.length === 0) {
+        e.preventDefault();
+        alert('⚠️ Debe seleccionar al menos una asignatura');
+    }
+});
+</script>
+{% endblock %}

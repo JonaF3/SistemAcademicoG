@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Estudiante{% endblock %}
+
+{% block content %}
+<h2 style="color: #667eea; text-align: center; margin-bottom: 10px;">➕ Registrar Nuevo Estudiante</h2>
+<p style="text-align: center; color: #666; margin-bottom: 30px;">
+    📋 Después del registro podrás generar tu proforma con las asignaturas que desees cursar
+</p>
+
+<form method="POST" action="{{ url_for('crear_estudiante') }}">
+    <div class="form-group">
+        <label for="codigo_estudiante">Código de Estudiante *</label>
+        <input type="text" id="codigo_estudiante" name="codigo_estudiante" required 
+               placeholder="Ej: EST-2025-001">
+    </div>
+    
+    <div class="form-group">
+        <label for="cedula">Cédula *</label>
+        <input type="text" id="cedula" name="cedula" required 
+               placeholder="Ej: 0123456789">
+    </div>
+    
+    <div class="form-group">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" required 
+               placeholder="Ej: Juan">
+    </div>
+    
+    <div class="form-group">
+        <label for="apellido">Apellido *</label>
+        <input type="text" id="apellido" name="apellido" required 
+               placeholder="Ej: Pérez">
+    </div>
+    
+    <div class="form-group">
+        <label for="curso">Curso *</label>
+        <select id="curso" name="curso" required>
+            <option value="">-- Seleccione su curso --</option>
+            <option value="Primer Curso">Primer Curso ($300.00)</option>
+            <option value="Segundo Curso">Segundo Curso ($340.00)</option>
+            <option value="Tercer Curso">Tercer Curso ($450.00)</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" required 
+               placeholder="Ej: juan.perez@email.com">
+    </div>
+    
+    <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196F3;">
+        <strong>ℹ️ Nota:</strong> Al registrarte:
+        <ul style="margin: 10px 0 0 20px;">
+            <li>Tu estado inicial será: <strong>No Matriculado</strong></li>
+            <li>Podrás generar tu proforma seleccionando las asignaturas que cursarás</li>
+            <li>El costo varía según el curso que selecciones</li>
+        </ul>
+    </div>
+    
+    <button type="submit">Registrar Estudiante</button>
+</form>
+{% endblock %}
